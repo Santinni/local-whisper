@@ -28,6 +28,7 @@ Jednoduchý, ale **extrémně výkonný** nástroj pro **lokální přepis řeč
 *   **Formáty:** Generuje nejen text (`.txt`), ale i titulky (`.srt`, `.vtt`) a metadata (`.json`).
 *   **Detekce řeči (VAD):** Automaticky filtruje tichá místa pro přesnější přepis.
 *   **Portable:** Díky nástroji `uv` má projekt izolované Python prostředí.
+*   **Podpora `.m4a/.mp4/...`:** Automatické dekódování (ffmpeg) bez systémové instalace.
 
 ---
 
@@ -71,19 +72,38 @@ uv run transcribe.py audio1.mp3 audio2.wav video.mp4
 Všechna nastavení (velikost modelu, jazyk, výstupní formáty, optimalizace) se dají měnit v souboru **`config.json`**.
 Není potřeba zasahovat do kódu.
 
+### Kvalita „1:1“ (doporučeno pro finální přepis)
+Použijte připravený profil **`config.hq.json`**:
+```powershell
+uv run transcribe.py --config config.hq.json nahravka.mp3
+```
+
+### CLI přepínače (rychlé override bez úprav configu)
+Skript podporuje několik přepínačů, které přepíší hodnoty z configu jen pro daný běh:
+```powershell
+uv run transcribe.py --config config.hq.json nahravka.mp3 --beam 10 --best-of 10 --no-vad --no-batched
+```
+Nejčastější:
+- `--config` (jiný config soubor)
+- `--model`, `--lang`, `--beam`, `--best-of`, `--patience`
+- `--vad` / `--no-vad`
+- `--batched` / `--no-batched`
+
 ---
 
-## ⚡ Zprovoznění na NVIDIA GPU (RTX 30xx/40xx)
+## ⚡ Zprovoznění na NVIDIA GPU
 
-Aby `faster-whisper` běžel bleskově na grafické kartě (místo pomalého CPU), potřebuje knihovny **cuBLAS** a **cuDNN**. Ty nejsou součástí Python balíčků kvůli licenčním podmínkám.
+Projekt je nastavený tak, aby se v prostředí `uv` nainstaloval **CUDA-enabled PyTorch** (viz `pyproject.toml` → `tool.uv.index` a mapování `torch` na `pytorch-cu124`). V praxi to znamená:
 
-Pokud vám skript píše `Používám CPU`, ale máte NVIDIA kartu:
+1. `uv sync`
+2. spusťte přepis
+3. ověřte, že v logu vidíte:
+   - `[DEVICE] Používám NVIDIA GPU (CUDA).`
 
-1.  Stáhněte si **cuDNN 8.x** a **cuBLAS** pro CUDA 12 (nebo 11, podle vaší instalace driverů).
-    *   *Nejjednodušší cesta:* Stáhněte si DLL soubory z repozitáře `purton-tech/Ctranslate2-Deps` nebo oficiálního NVIDIA webu.
-2.  Zkopírujte soubory **`cudnn_ops_infer64_8.dll`**, **`cublas64_11.dll`** (a další závislosti) do složky:
-    *   `local-whisper/.venv/Lib/site-packages/ctranslate2`
-    *   *Nebo jednodušeji:* Přidejte složku s těmito DLL do systémové proměnné `PATH`.
+Pokud vidíte `[DEVICE] Používám CPU (přepínám na int8).`:
+- Zkontrolujte, že máte aktuální NVIDIA driver.
+- Ověřte, že se nainstaloval CUDA torch build (v `uv` prostředí).
+- Pokud jste měnili závislosti, udělejte znovu `uv sync`.
 
 ---
 
@@ -97,6 +117,7 @@ Pokud vám skript píše `Používám CPU`, ale máte NVIDIA kartu:
 | `device` | `auto`, `cuda`, `cpu` | `auto` se pokusí najít GPU samo. |
 | `language` | `cs`, `en`, `sk`, ... | Jazyk přepisu (ISO 639-1 kód). |
 | `output_formats` | `["txt", "srt", "vtt", "json"]` | Jaké soubory se mají vygenerovat. |
+| `output_dir` | např. `"transcriptions"` | Kam se ukládají výstupy. |
 
 ### Výkonnostní nastavení (⚡ DŮLEŽITÉ pro rychlost!)
 
@@ -142,6 +163,22 @@ local-whisper/
 ├── LICENSE                # MIT License
 ├── models/                # AI modely (auto-download)
 └── transcriptions/        # Výstupní přepisy
+```
+
+Pozn.: konkrétní výstupní složka se řídí `output_dir` v configu (např. `transcriptions/` nebo `transcriptions/result/`).
+
+---
+
+## 🎬 Podporované vstupy (`.m4a/.mp4/...`)
+
+Skript umí přepsat běžné audio soubory (`.mp3`, `.wav`) a také vybrané kontejnery/video formáty.
+
+- Pokud je vstup např. `.m4a/.mp4/.mov/.mkv/.webm/.aac/.m4b`, skript ho automaticky převede do **dočasného WAV** (16 kHz, mono) přes `ffmpeg`.
+- `ffmpeg` se vezme ze systému, pokud je k dispozici; jinak se použije **zabalený ffmpeg** z Python balíčku `imageio-ffmpeg` (může se stáhnout při prvním použití).
+
+Příklad (Windows cesta s diakritikou):
+```powershell
+uv run transcribe.py --config config.hq.json "C:\Users\<USER>\Downloads\recording_part_3.m4a"
 ```
 
 ---

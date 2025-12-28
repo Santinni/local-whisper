@@ -1,7 +1,7 @@
 {
     "_comment": "Konfigurace local-whisper v0.1.0-beta s pokročilými optimalizacemi",
     
-    "model_size": "medium",
+    "model_size": "large-v3",
     "device": "auto",
     "compute_type": "float16",
     "language": "cs",
@@ -9,24 +9,33 @@
     "_performance": "--- VÝKONNOSTNÍ NASTAVENÍ ---",
     "use_batched_inference": true,
     "batch_size": 16,
-    "beam_size": 5,
+    "beam_size": 10,
+    "best_of": 5,
+    "patience": 1.0,
     
     "_audio_processing": "--- ZPRACOVÁNÍ ZVUKU ---",
     "vad_filter": true,
+    "vad_parameters": {
+        "threshold": 0.35,
+        "min_speech_duration_ms": 250,
+        "min_silence_duration_ms": 500,
+        "speech_pad_ms": 400
+    },
     "min_silence_duration_ms": 500,
     
     "_quality_improvements": "--- ZVÝŠENÍ KVALITY ---",
     "word_timestamps": false,
     "initial_prompt": "",
-    "condition_on_previous_text": true,
+    "condition_on_previous_text": false,
     "temperature": [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
     "compression_ratio_threshold": 2.4,
     "log_prob_threshold": -1.0,
     "no_speech_threshold": 0.6,
+    "hallucination_silence_threshold": 2.0,
     
     "_repetition_control": "--- PREVENCE OPAKOVÁNÍ ---",
-    "repetition_penalty": 1.0,
-    "no_repeat_ngram_size": 0,
+    "repetition_penalty": 1.15,
+    "no_repeat_ngram_size": 3,
     
     "_output": "--- VÝSTUPNÍ NASTAVENÍ ---",
     "output_formats": ["txt", "srt", "vtt", "json"],

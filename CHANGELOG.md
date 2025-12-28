@@ -1,5 +1,13 @@
 # 📝 CHANGELOG
 
+## Unreleased (2025-12-29)
+
+### 🚀 Novinky
+- ✅ **CUDA přes `uv` + PyTorch CUDA wheels**: `torch` se instaluje z PyTorch CUDA indexu (cu124) pro spolehlivou detekci a běh na GPU.
+- ✅ **Profil `config.hq.json`**: Quality-first preset pro co nejvěrnější („1:1“) přepis.
+- ✅ **CLI overrides**: Přidány přepínače `--config`, `--beam`, `--best-of`, `--no-vad`, `--no-batched` aj. pro rychlé přenastavení bez úprav `config.json`.
+- ✅ **Podpora `.m4a/.mp4/...`**: Automatické dekódování přes ffmpeg do dočasného WAV; fallback na zabalený ffmpeg z `imageio-ffmpeg` (bez nutnosti systémové instalace).
+
 ## v0.1.0-beta (2024-12-28) - První beta vydání
 
 ### 🚀 Hlavní funkce

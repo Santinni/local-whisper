@@ -22,11 +22,20 @@ uv sync
 uv run transcribe.py vase_audio.mp3
 ```
 
-🎉 **To je vše!** Hotové přepisy najdete ve složce `transcriptions/`
+🎉 **To je vše!** Hotové přepisy najdete ve složce `transcriptions/` (lze změnit přes `output_dir` v configu).
+
+Tip: při startu uvidíte log řádek `[DEVICE] ...` – pokud je k dispozici CUDA, běží to na NVIDIA GPU.
 
 ---
 
 ## ⚙️ Základní konfigurace
+
+Projekt načítá konfiguraci z `config.json`. Pro kvalitu „1:1“ je připravený profil `config.hq.json`.
+
+### Nejvyšší kvalita (doporučeno pro finální přepis)
+```powershell
+uv run transcribe.py --config config.hq.json vase_audio.mp3
+```
 
 ### Pro rychlost (RTX GPU)
 Upravte `config.json`:
@@ -81,12 +90,18 @@ Upravte `config.json`:
 uv run transcribe.py video1.mp4 audio1.mp3 audio2.wav
 ```
 
+### Přepis `.m4a` (a dalších video/audio formátů)
+Není potřeba instalovat systémový ffmpeg – projekt umí formáty jako `.m4a/.mp4/.mov/...` automaticky dekódovat do dočasného WAV.
+```powershell
+uv run transcribe.py --config config.hq.json "C:\Users\<USER>\Downloads\recording_part_1.m4a"
+```
+
 ---
 
 ## 🔧 Troubleshooting
 
 ### ❌ "Používám CPU" (ale mám GPU)
-➡️ Chybí CUDA knihovny. Viz [README.md - Zprovoznění na NVIDIA GPU](README.md#-zprovoznění-na-nvidia-gpu-rtx-30xx40xx)
+➡️ Nejčastěji jde o chybějící CUDA-enabled instalaci PyTorch nebo nekompatibilní driver. Viz [README.md - Zprovoznění na NVIDIA GPU](README.md#-zprovoznění-na-nvidia-gpu)
 
 ### ❌ "Out of memory"
 ➡️ Snižte `batch_size` v config.json:
@@ -102,6 +117,9 @@ uv run transcribe.py video1.mp4 audio1.mp3 audio2.wav
   "initial_prompt": "kontext..."
 }
 ```
+
+### ❌ Přepis `.m4a` selže na ffmpeg
+➡️ Projekt standardně použije zabalený ffmpeg (stažený na první použití). Pokud jste offline a ještě nebyl stažený, použijte systémový ffmpeg nebo převeďte soubor do `.wav`/`.mp3`.
 
 ---
 

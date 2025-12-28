@@ -1,0 +1,41 @@
+{
+  "_comment": "Quality-first profil pro co nejpřesnější přepis (1:1). Pomalější než batched, ale typicky výrazně přesnější.",
+
+  "model_size": "large-v3",
+  "device": "auto",
+  "compute_type": "float16",
+  "language": "cs",
+
+  "_quality": "--- DECODING (KVALITA) ---",
+  "use_batched_inference": false,
+  "beam_size": 10,
+  "best_of": 10,
+  "patience": 1.0,
+  "temperature": [0.0, 0.2],
+  "condition_on_previous_text": false,
+  "compression_ratio_threshold": 2.0,
+  "log_prob_threshold": -0.5,
+  "no_speech_threshold": 0.6,
+
+  "_anti_repeat": "--- PROTI OPAKOVÁNÍ ---",
+  "repetition_penalty": 1.15,
+  "no_repeat_ngram_size": 3,
+
+  "_anti_hallucination": "--- PROTI HALUCINACÍM ---",
+  "hallucination_silence_threshold": 2.0,
+
+  "_vad": "--- VAD ---",
+  "vad_filter": true,
+  "vad_parameters": {
+    "threshold": 0.3,
+    "min_speech_duration_ms": 100,
+    "min_silence_duration_ms": 500,
+    "speech_pad_ms": 800
+  },
+
+  "_output": "--- VÝSTUP ---",
+  "output_formats": ["txt", "srt", "vtt", "json"],
+  "output_dir": "transcriptions",
+  "log_progress": true,
+  "word_timestamps": false
+}
