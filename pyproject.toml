@@ -1,0 +1,10 @@
+[project]
+name = "local-whisper"
+version = "0.1.0-beta"
+description = "Fast, private, local Speech-to-Text using faster-whisper with GPU acceleration"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "colorama>=0.4.6",
+    "faster-whisper>=1.2.1",
+]

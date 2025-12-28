@@ -1,0 +1,85 @@
+{
+    "_comment": "Příklady konfigurací pro různé použití - zkopírujte požadovaný příklad do config.json",
+    
+    "rychlost_nad_vsim": {
+        "_popis": "Maximální rychlost - pro RTX 4070 s dobrým zvukem",
+        "model_size": "medium",
+        "use_batched_inference": true,
+        "batch_size": 32,
+        "beam_size": 3,
+        "word_timestamps": false,
+        "compute_type": "float16"
+    },
+    
+    "maximalni_kvalita": {
+        "_popis": "Nejlepší možná kvalita - pomalé, ale přesné",
+        "model_size": "large-v3",
+        "use_batched_inference": false,
+        "beam_size": 10,
+        "word_timestamps": true,
+        "temperature": [0.0],
+        "compression_ratio_threshold": 2.0,
+        "log_prob_threshold": -0.5,
+        "compute_type": "float16"
+    },
+    
+    "pro_nahrávky_s_vlastními_jmény": {
+        "_popis": "Podcast, interview s konkrétními lidmi",
+        "model_size": "medium",
+        "use_batched_inference": true,
+        "batch_size": 16,
+        "initial_prompt": "Ahoj, jsem Jan Novák a dnes budu mluvit o Petru Svobodovi, Marii Černé a firmě TechCorp s.r.o.",
+        "temperature": [0.0, 0.2],
+        "condition_on_previous_text": true
+    },
+    
+    "pro_špatný_zvuk": {
+        "_popis": "Šum, překrývající se hlasy, špatná kvalita",
+        "model_size": "large-v3",
+        "use_batched_inference": false,
+        "beam_size": 8,
+        "temperature": [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+        "compression_ratio_threshold": 3.0,
+        "log_prob_threshold": -1.2,
+        "vad_filter": true,
+        "min_silence_duration_ms": 300
+    },
+    
+    "karaoke_titulky": {
+        "_popis": "Pro vytvoření karaoke s word-level timing",
+        "model_size": "medium",
+        "use_batched_inference": true,
+        "batch_size": 16,
+        "word_timestamps": true,
+        "output_formats": ["srt", "json", "vtt"],
+        "vad_filter": false
+    },
+    
+    "cpu_režim": {
+        "_popis": "Pro použití bez GPU",
+        "model_size": "small",
+        "device": "cpu",
+        "compute_type": "int8",
+        "use_batched_inference": false,
+        "beam_size": 5,
+        "vad_filter": true
+    },
+    
+    "proti_opakování": {
+        "_popis": "Pokud se text stále opakuje",
+        "model_size": "medium",
+        "repetition_penalty": 1.3,
+        "no_repeat_ngram_size": 5,
+        "condition_on_previous_text": false,
+        "temperature": [0.0, 0.2]
+    },
+    
+    "multijazyk": {
+        "_popis": "Pro audio s více jazyky (automatická detekce)",
+        "model_size": "large-v3",
+        "language": null,
+        "use_batched_inference": true,
+        "batch_size": 16,
+        "temperature": [0.0, 0.2, 0.4]
+    }
+}

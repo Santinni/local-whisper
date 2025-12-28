@@ -1,0 +1,42 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Whisper modely (velké soubory)
+models/
+
+# Výstupy přepisů
+transcriptions/
+benchmark_results.json
+
+# Audio/Video soubory (pro testování)
+*.mp3
+*.wav
+*.m4a
+*.mp4
+*.avi
+*.mkv
+*.flac
+*.ogg
+
+# Zálohy
+*.backup
+config.json.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
